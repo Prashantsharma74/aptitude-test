@@ -1,12 +1,35 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const AutoIncrement = require('mongoose-sequence')(mongoose);
 
-const adminSchema = new mongoose.Schema({
-    username: {
+const userSchema = new mongoose.Schema({
+    email: {
         type: String,
         required: true,
         unique: true,
+        validate: {
+            validator: (email) =>
+                /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email),
+            message: 'Invalid email format.',
+        },
+    },
+    phone: {
+        type: String,
+        required: true,
+        unique: true,
+        validate: {
+            validator: (phone) =>
+                /^\+?[1-9]\d{1,14}$/.test(phone), // E.164 format for phone numbers
+            message: 'Invalid phone number format.',
+        },
+    },
+    address: {
+        type: String,
+        required: true,
+    },
+    experience: {
+        type: Number,
+        required: true,
+        min: [0, 'Experience cannot be negative.'],
     },
     password: {
         type: String,
@@ -19,19 +42,16 @@ const adminSchema = new mongoose.Schema({
 });
 
 // Hash password before saving
-adminSchema.pre('save', async function (next) {
+userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
     this.password = await bcrypt.hash(this.password, 10);
     next();
 });
 
 // Method to compare password
-adminSchema.methods.comparePassword = function (password) {
+userSchema.methods.comparePassword = function (password) {
     return bcrypt.compare(password, this.password);
 };
 
-adminSchema.plugin(AutoIncrement, {id:'admin_seq',inc_field: 'id'});
-
-module.exports = mongoose.model('Admin', adminSchema);
-
-// make userschema for condidate for interview key field is email,phone number address,experiance  
+// Export the model
+module.exports = mongoose.model('User', userSchema);

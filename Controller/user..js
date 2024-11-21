@@ -1,13 +1,10 @@
 
 const Candidate = require('../Models/user'); // Ensure you have required the Candidate model
 const Question = require('../Models/Question');
-const bcrypt = require('bcrypt'); // Optional if passwords are hashed
+const bcrypt = require('bcryptjs'); // Optional if passwords are hashed
 const jwt = require('jsonwebtoken'); // To generate tokens for secure login
 const jwt_decode = require("jwt-decode");
 const crypto = require('crypto'); 
-
-
-
 
 const submitCandidate = async (req, res) => {
     try {
