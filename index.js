@@ -10,7 +10,7 @@ const app = express();
 
 // Connect to MongoDB
 const allowedOrigins = process.env.NODE_ENV === 'production'
-  ? ['https://technorizen-solution-examhub.vercel.app']
+  ? ['https://technorizen-solution-examhub.vercel.app',"https://admin-test-sigma.vercel.app"]
   : ['http://localhost:3000', 'http://localhost:3001'];
 
 app.use(cors({
